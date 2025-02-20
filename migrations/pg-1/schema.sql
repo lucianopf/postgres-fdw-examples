@@ -31,3 +31,5 @@ CREATE FOREIGN TABLE temperatures_2017
     PARTITION OF temperatures
     FOR VALUES FROM ('2017-01-01') TO ('2018-01-01')
     SERVER db3;
+
+CREATE TABLE temperatures_default PARTITION OF temperatures DEFAULT;
