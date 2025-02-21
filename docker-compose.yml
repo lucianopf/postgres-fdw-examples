@@ -4,26 +4,37 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=poc-sharding
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=poc-sharding
+      - POSTGRES_DB=postgres
     volumes:
      - ./migrations/pg-1:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
   postgres-2:
     build: .
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=poc-sharding
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=poc-sharding
+      - POSTGRES_DB=postgres
     volumes:
      - ./migrations/pg-2:/docker-entrypoint-initdb.d
   postgres-3:
     build: .
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=poc-sharding
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=poc-sharding
+      - POSTGRES_DB=postgres
     volumes:
      - ./migrations/pg-3:/docker-entrypoint-initdb.d
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - "./migrations/mysql-1/schema.sql:/docker-entrypoint-initdb.d/mysql_setup.sql:z"
