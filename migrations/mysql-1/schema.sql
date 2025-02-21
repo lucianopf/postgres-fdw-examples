@@ -1,17 +1,19 @@
-create database public;
+CREATE DATABASE public;
 
-use public;
+USE public;
 
-create table users(id int, name varchar(10));
+CREATE TABLE transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  company_id INT NOT NULL,
+  amount INT NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-insert into
-  users
-values
-  (1, 'John'),
-  (2, 'Mary'),
-  (3, 'Peter');
 
-alter table
-  users
-add
-  constraint primary key users_pk(id);
+-- Insert data example
+INSERT INTO transactions (company_id, amount, description) VALUES (1, 100, 'Payment for service');
+INSERT INTO transactions (company_id, amount, description) VALUES (1, 100, 'Payment for service');
+INSERT INTO transactions (company_id, amount, description) VALUES (2, 150, 'Payment for product');
+INSERT INTO transactions (company_id, amount, description) VALUES (3, 200, 'Payment for service');
+INSERT INTO transactions (company_id, amount, description) VALUES (3, 250, 'Payment for product');

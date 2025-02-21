@@ -1,7 +1,11 @@
+-- Activate fdw extensions
+
 CREATE EXTENSION postgres_fdw;
+CREATE EXTENSION mysql_fdw;
 
 
--- Sharding example --
+
+-- Setup FDW servers
 
 CREATE SERVER db2
     FOREIGN DATA WRAPPER postgres_fdw
@@ -9,6 +13,9 @@ CREATE SERVER db2
 CREATE SERVER db3
     FOREIGN DATA WRAPPER postgres_fdw
     OPTIONS (host 'postgres-3', dbname 'postgres', port '5432');
+CREATE SERVER mysql
+    FOREIGN DATA WRAPPER mysql_fdw
+    OPTIONS (host 'mysql', port '3306');
 
 CREATE USER MAPPING FOR user
         SERVER db2
@@ -16,6 +23,9 @@ CREATE USER MAPPING FOR user
 CREATE USER MAPPING FOR user
         SERVER db3
         OPTIONS (user 'postgres', password 'password');
+CREATE USER MAPPING FOR postgres
+        SERVER mysql
+        OPTIONS (username 'root', password 'root');
 
 -- Partitioning example --
 
@@ -40,7 +50,7 @@ CREATE FOREIGN TABLE temperatures_2017
 CREATE TABLE temperatures_default PARTITION OF temperatures DEFAULT;
 
 -- External postgres datasource example --
-SELECT pg_sleep(10);
+SELECT pg_sleep(30);
 
 CREATE TABLE companies (
     id              serial PRIMARY KEY,
@@ -50,11 +60,13 @@ CREATE TABLE companies (
 
 CREATE SCHEMA db2;
 CREATE SCHEMA db3;
+CREATE SCHEMA mysql;
 
 IMPORT FOREIGN SCHEMA public FROM SERVER db2 INTO db2;
 IMPORT FOREIGN SCHEMA public FROM SERVER db3 INTO db3;
+IMPORT FOREIGN SCHEMA public FROM SERVER mysql INTO mysql;
 
--- Insert data exemple
+-- Insert data example
 INSERT INTO companies (name, user_id) VALUES ('Company 1', 1);
 INSERT INTO companies (name, user_id) VALUES ('Company 2', 2);
 INSERT INTO companies (name, user_id) VALUES ('Company 3', 3);
@@ -65,3 +77,4 @@ INSERT INTO companies (name, user_id) VALUES ('Company 3', 3);
 INSERT INTO temperatures (created_at, city, mintemp, maxtemp) VALUES ('2016-02-03', 'London', 08, 13);
 INSERT INTO temperatures (created_at, city, mintemp, maxtemp) VALUES ('2017-05-05', 'New York', 13, 21);
 INSERT INTO temperatures (created_at, city, mintemp, maxtemp) VALUES ('2018-09-12', 'Sao Paulo', 24, 31);
+
